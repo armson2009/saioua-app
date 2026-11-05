@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e2620">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Saioua">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Saioua Connecté</title>
+<style>
+* { box-sizing: border-box; }
+html { color-scheme: light only; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #1b2a24;
+  background: #0e2620;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(200,110,52,.20), transparent 42%),
+    radial-gradient(circle at 88% 96%, rgba(20,121,90,.32), transparent 46%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.020) 0 2px, transparent 2px 9px);
+  background-attachment: fixed;
+  -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+body > .wrap { flex: 1 0 auto; width: 100%; }
+body > .pagne { flex: none; }
+.cache { display: none !important; }
+.pagne {
+  height: 9px;
+  background: repeating-linear-gradient(90deg, #c1502e 0 16px, #e8a33d 16px 26px, #f2e7d2 26px 32px, #14795a 32px 48px, #e8a33d 48px 54px);
+}
+.wrap { max-width: 440px; margin: 0 auto; padding: 22px 16px calc(96px + env(safe-area-inset-bottom)); }
+.brand { text-align: center; padding: 4px 0 16px; }
+.brand h1 { margin: 0; font-size: 27px; line-height: 1.12; font-weight: 800; letter-spacing: -.7px; color: #fff; }
+.brand h1 em { font-style: normal; color: #e8a33d; }
+.brand p { margin: 8px 0 0; font-size: 14px; color: #a9c9bc; letter-spacing: .3px; }
+
+.card { background: #fdfbf6; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(0,0,0,.30); }
+.card .lis { height: 4px; background: linear-gradient(90deg, #c1502e, #e8a33d 55%, #14795a); }
+.pad { padding: 18px 18px 20px; }
+
+.bonjour { margin: 0; font-size: 15px; color: #55655d; }
+.nom { margin: 2px 0 12px; font-size: 24px; font-weight: 800; color: #0e2620; letter-spacing: -.4px; }
+.pill { display: inline-block; padding: 8px 13px; border-radius: 999px; font-size: 14px; font-weight: 800; }
+.pill.ok { background: #e3f4ec; color: #0d6a4d; }
+.pill.bientot { background: #fcefd5; color: #8a5a06; }
+.pill.retard { background: #fbe1da; color: #a13a1e; }
+.mensuel { margin: 12px 0 0; font-size: 14px; color: #55655d; }
+.mensuel b { color: #1b2a24; }
+
+.etape { display: flex; align-items: center; gap: 10px; margin: 0 0 13px; font-size: 17px; font-weight: 800; color: #0e2620; }
+.num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #14795a; color: #fff; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+
+.durees { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.duree {
+  -webkit-appearance: none; appearance: none; cursor: pointer; background: #fffefb; border: 2px solid #e6dfcf;
+  border-radius: 12px; padding: 12px 2px; text-align: center; font-family: inherit; color: #1b2a24; min-height: 56px;
+}
+.duree b { display: block; font-size: 20px; font-weight: 800; line-height: 1.1; }
+.duree small { display: block; font-size: 11.5px; font-weight: 700; color: #6d7d76; margin-top: 2px; }
+.duree.on { border-color: #14795a; background: #eaf6f1; box-shadow: 0 0 0 3px rgba(20,121,90,.15); }
+
+.total { text-align: center; margin: 16px 0 2px; }
+.total small { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #6d7d76; }
+.total strong { display: block; margin-top: 2px; font-size: 40px; line-height: 1.05; font-weight: 800; color: #c1502e; letter-spacing: -1px; }
+
+.btn {
+  display: flex; align-items: center; justify-content: center; width: 100%; min-height: 54px; margin-top: 14px; padding: 12px 14px;
+  border: 0; border-radius: 14px; font-family: inherit; font-size: 17px; font-weight: 800; text-decoration: none; text-align: center; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.btn.wave { background: linear-gradient(180deg, #25b6ee, #1496d1); color: #fff; box-shadow: 0 6px 16px rgba(20,150,209,.35); }
+.btn.vert { background: #14795a; color: #fff; box-shadow: 0 6px 16px rgba(20,121,90,.30); }
+.btn.or { background: linear-gradient(100deg, #e8a33d, #f1c577); color: #0e2620; box-shadow: 0 6px 16px rgba(232,163,61,.30); }
+.btn.clair { background: #ece5d4; color: #0e2620; }
+.btn.petit { min-height: 44px; font-size: 15px; margin-top: 10px; }
+.btn[disabled] { opacity: .55; }
+.btn.fait[disabled] { opacity: 1; background: #e3f4ec; color: #0d6a4d; box-shadow: none; }
+.btn:active { transform: scale(.985); }
+.aide { margin: 11px 0 0; font-size: 13px; line-height: 1.45; color: #55655d; text-align: center; }
+.aide a { color: #14795a; font-weight: 700; }
+.aide.gauche { text-align: left; margin: 8px 0 2px; }
+
+.attente { text-align: center; padding: 6px 0 2px; }
+.pad.attente { padding: 22px 20px 22px; }
+.rond { width: 46px; height: 46px; margin: 0 auto 12px; border-radius: 50%; border: 5px solid #e6dfcf; border-top-color: #14795a; animation: tourne 1s linear infinite; }
+@keyframes tourne { to { transform: rotate(360deg); } }
+.attente h2, .succes h2, .refus h2, .inconnu h2, .titre2 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: #0e2620; }
+.attente p, .succes p, .refus p, .inconnu p { margin: 0; font-size: 15px; line-height: 1.5; color: #44544d; }
+.succes { text-align: center; }
+.coche { width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%; background: #14795a; color: #fff; font-size: 32px; line-height: 56px; font-weight: 800; }
+.echeance-neuve { display: inline-block; margin-top: 12px; padding: 9px 15px; border-radius: 12px; background: #e3f4ec; color: #0d6a4d; font-size: 16px; font-weight: 800; }
+
+.histo h3, .petit-titre { margin: 0 0 8px; font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6d7d76; }
+.histo div.l { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 0; border-top: 1px solid #ece5d4; font-size: 14.5px; }
+.histo div.l:first-of-type { border-top: 0; }
+.histo span.m { font-weight: 800; color: #0e2620; font-size: 16px; }
+.histo span.d { color: #6d7d76; text-align: right; font-size: 13.5px; line-height: 1.35; }
+.vide { margin: 0; font-size: 14.5px; color: #55655d; }
+
+.champ { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 800; color: #44544d; }
+.saisie {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 54px; padding: 0 14px; border: 2px solid #e6dfcf; border-radius: 12px;
+  background: #fffefb; color: #0e2620; font-family: inherit; font-size: 21px; font-weight: 800; letter-spacing: 1px;
+}
+.saisie:focus { outline: 0; border-color: #14795a; box-shadow: 0 0 0 3px rgba(20,121,90,.15); }
+.saisie.err { border-color: #c1502e; }
+.saisie.code { text-transform: uppercase; letter-spacing: 3px; text-align: center; }
+
+.pied { text-align: center; font-size: 13px; line-height: 1.6; color: #86a99a; margin-top: 6px; }
+.pied a { color: #e8a33d; font-weight: 700; text-decoration: none; }
+
+/* ligne icône + texte (bienvenue, rappels) */
+.ligne { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #efe7d6; }
+.ligne:first-child { border-top: 0; padding-top: 0; }
+.ligne:last-child { padding-bottom: 0; }
+.pastille { width: 32px; height: 32px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; }
+.pastille.ok { background: #14795a; }
+.pastille.cloche { background: #fcefd5; color: #c1502e; }
+.pastille.gris { background: #ece5d4; color: #6d7d76; }
+.ligne h3 { margin: 0; font-size: 15px; font-weight: 800; color: #0e2620; }
+.ligne p { margin: 2px 0 0; font-size: 13.5px; line-height: 1.4; color: #55655d; }
+.ligne .btn { margin-top: 10px; }
+.logo-grand { width: 88px; height: 88px; margin: 0 auto 12px; display: block; filter: drop-shadow(0 8px 14px rgba(0,0,0,.45)); }
+.accueil-titre { text-align: center; padding: 0 4px 16px; }
+.accueil-titre h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.5px; color: #fff; }
+.accueil-titre h2 em { font-style: normal; color: #e8a33d; }
+.accueil-titre p { margin: 6px 0 0; font-size: 14.5px; color: #a9c9bc; }
+
+/* petits textes d'aide */
+.faq h3 { margin: 14px 0 3px; font-size: 15px; font-weight: 800; color: #0e2620; }
+.faq h3:first-of-type { margin-top: 0; }
+.faq p { margin: 0; font-size: 14px; line-height: 1.5; color: #44544d; }
+
+/* barre du bas */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr);
+  background: #0a1c17; border-top: 1px solid rgba(255,255,255,.1); padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  -webkit-appearance: none; appearance: none; background: none; border: 0; color: #8fb0a3; font-family: inherit; font-size: 12px; font-weight: 700;
+  padding: 9px 0 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 58px;
+}
+.tab svg { width: 23px; height: 23px; }
+.tab.on { color: #e8a33d; }
+
+.toast {
+  position: fixed; left: 16px; right: 16px; bottom: calc(80px + env(safe-area-inset-bottom)); max-width: 408px; margin: 0 auto; z-index: 30;
+  background: #fdfbf6; color: #0e2620; font-weight: 700; font-size: 14.5px; line-height: 1.4; padding: 13px 16px; border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.45); border-left: 5px solid #14795a;
+}
+.toast.err { border-left-color: #c1502e; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b8a68"/><stop offset="1" stop-color="#0c211b"/></linearGradient>
+<symbol id="icone" viewBox="0 0 100 100"><rect width="100" height="100" rx="23" fill="url(#gi)"/><g fill="none" stroke="#e8a33d" stroke-width="6.5" stroke-linecap="round"><path d="M17.5 35.5A46 46 0 0 1 82.5 35.5"/><path d="M26 44A34 34 0 0 1 74 44"/><path d="M34.5 52.5A22 22 0 0 1 65.5 52.5"/></g><circle cx="50" cy="69" r="6.5" fill="#e8a33d"/></symbol>
+<symbol id="cloche" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.3 15.5A1 1 0 0 0 5.2 17h13.6a1 1 0 0 0 .9-1.5L18 12.6V9a6 6 0 0 0-6-6zm-2.2 15.5a2.2 2.2 0 0 0 4.4 0z" fill="currentColor"/></symbol>
+<symbol id="coche-s" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<div class="pagne"></div>
+<div class="wrap">
+
+  <!-- chargement -->
+  <section id="v-charge">
+    <div class="brand"><h1>Saioua <em>Connecté</em></h1><p>Mon abonnement à domicile</p></div>
+    <div class="card"><div class="lis"></div><div class="pad attente"><div class="rond"></div><p>Chargement de ton abonnement…</p></div></div>
+  </section>
+
+  <!-- pas de connexion -->
+  <section id="v-reseau" class="cache">
+    <div class="brand"><h1>Saioua <em>Connecté</em></h1><p>Mon abonnement à domicile</p></div>
+    <div class="card"><div class="lis"></div><div class="pad inconnu">
+      <h2>Pas de connexion</h2>
+      <p>Impossible de joindre le serveur pour l'instant. Vérifie ta connexion Internet (Wi-Fi ou données mobiles) puis réessaie.</p>
+      <button class="btn vert" id="btnReessayer" type="button">Réessayer</button>
+    </div></div>
+  </section>
+
+  <!-- appareil pas encore lié -->
+  <section id="v-nonlie" class="cache">
+    <div class="brand"><h1>Saioua <em>Connecté</em></h1><p>Mon abonnement à domicile</p></div>
+    <div class="card"><div class="lis"></div><div class="pad inconnu">
+      <h2>Relie ce téléphone</h2>
+      <p id="nonlieMsg">Cette application se relie à ton abonnement une seule fois, depuis le Wi-Fi Saioua.</p>
+      <div class="ligne" style="margin-top:14px;border-top:0;padding-bottom:0">
+        <div class="pastille gris"><b style="font-size:15px">1</b></div>
+        <div><h3>Connecte-toi au Wi-Fi Saioua</h3><p>Avec le téléphone à relier.</p></div>
+      </div>
+      <div class="ligne" style="padding-bottom:0">
+        <div class="pastille gris"><b style="font-size:15px">2</b></div>
+        <div><h3>Ouvre « Abonné à domicile »</h3><p>Page du portail Wi-Fi, onglet à côté de « Ticket Wi-Fi ».</p></div>
+      </div>
+      <div class="ligne" style="padding-bottom:0">
+        <div class="pastille gris"><b style="font-size:15px">3</b></div>
+        <div><h3>Touche « Installer l'application »</h3><p>Elle s'ouvre ici et reconnaît ton abonnement.</p></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="lis"></div><div class="pad">
+      <label class="champ" for="codeSaisie">Tu as un code de liaison ?</label>
+      <input class="saisie code" id="codeSaisie" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ABCD123456" maxlength="20">
+      <p class="aide gauche">Le code s'affiche sur la page « Abonné à domicile » et reste valable 15 minutes.</p>
+      <button class="btn vert" id="btnCode" type="button">Relier avec ce code</button>
+      <p class="aide" id="codeErr" style="color:#a13a1e"></p>
+    </div></div>
+  </section>
+
+  <!-- première ouverture : appareil reconnu + rappels -->
+  <section id="v-bienvenue" class="cache">
+    <svg class="logo-grand" viewBox="0 0 100 100" aria-hidden="true"><use href="#icone"/></svg>
+    <div class="accueil-titre"><h2>Bienvenue sur <em>Saioua</em></h2><p>Ton abonnement à domicile, dans ta poche.</p></div>
+    <div class="card"><div class="lis"></div><div class="pad">
+      <div class="ligne">
+        <div class="pastille ok"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#coche-s"/></svg></div>
+        <div><h3>Appareil reconnu</h3><p id="bienvenueNom">Ce téléphone est lié à ton abonnement.</p></div>
+      </div>
+      <div class="ligne">
+        <div class="pastille cloche"><svg width="18" height="18"><use href="#cloche"/></svg></div>
+        <div>
+          <h3>Rappels d'échéance</h3>
+          <p id="bienvenueRap">3 jours avant ton échéance, et à chaque paiement reçu.</p>
+          <button class="btn or petit" id="btnRapBienvenue" type="button">Activer les rappels</button>
+        </div>
+      </div>
+    </div></div>
+    <button class="btn vert" id="btnContinuer" type="button">Continuer</button>
+  </section>
+
+  <!-- l'application -->
+  <section id="v-app" class="cache">
+    <div class="brand"><h1>Saioua <em>Connecté</em></h1><p>Mon abonnement à domicile</p></div>
+
+    <!-- ===== Accueil ===== -->
+    <div id="t-accueil">
+      <div class="card"><div class="lis"></div><div class="pad">
+        <p class="bonjour">Bonjour,</p>
+        <p class="nom" id="nom"></p>
+        <span class="pill ok" id="pill"></span>
+        <p class="mensuel">Ton abonnement : <b id="prixMois"></b> par mois</p>
+      </div></div>
+
+      <div class="card cache" id="carte-rap"><div class="lis"></div><div class="pad">
+        <div class="ligne">
+          <div class="pastille cloche"><svg width="18" height="18"><use href="#cloche"/></svg></div>
+          <div>
+            <h3>Rappels d'échéance</h3>
+            <p id="rapTxtAccueil"></p>
+            <button class="btn or petit" id="btnRapAccueil" type="button">Activer les rappels</button>
+          </div>
+        </div>
+      </div></div>
+
+      <div class="card cache" id="carte-install"><div class="lis"></div><div class="pad">
+        <div class="ligne">
+          <div class="pastille ok"><svg width="20" height="20" viewBox="0 0 100 100"><use href="#icone"/></svg></div>
+          <div>
+            <h3>Installe l'application</h3>
+            <p id="installTxt"></p>
+            <button class="btn or petit cache" id="btnInstall" type="button">Installer sur ce téléphone</button>
+          </div>
+        </div>
+      </div></div>
+
+      <div id="paiement">
+        <div class="card"><div class="lis"></div><div class="pad">
+          <p class="etape"><span class="num">1</span> Choisis la durée</p>
+          <div class="durees" id="durees"></div>
+          <div class="total"><small>Montant à payer</small><strong id="total"></strong></div>
+        </div></div>
+
+        <div class="card"><div class="lis"></div><div class="pad">
+          <p class="etape"><span class="num">2</span> Paye avec Wave</p>
+          <a class="btn wave" id="lienWave" href="#">Payer avec Wave</a>
+          <p class="aide">Le montant est déjà rempli. Vérifie que le compte affiché est <b>Saioua Connecté</b>.<br>Wave ne s'ouvre pas ? <a id="lienWave2" href="#">Ouvre ce lien</a>.</p>
+        </div></div>
+
+        <div class="card"><div class="lis"></div><div class="pad">
+          <p class="etape"><span class="num">3</span> Confirme ton paiement</p>
+          <label class="champ" for="tel">Ton numéro Wave</label>
+          <input class="saisie" id="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07 00 00 00 00" maxlength="20">
+          <p class="aide gauche">C'est le numéro avec lequel tu payes. Il nous permet de retrouver ton paiement.</p>
+          <button class="btn vert" id="btnPaye" type="button">J'ai payé</button>
+          <p class="aide" id="erreur" style="color:#a13a1e"></p>
+          <p class="aide">Appuie ici après ton paiement Wave. Ton abonnement est prolongé dès que ton paiement est reçu, en général en quelques secondes.</p>
+        </div></div>
+      </div>
+
+      <div class="card cache" id="attente"><div class="lis"></div><div class="pad attente">
+        <div class="rond"></div>
+        <h2>Vérification du paiement</h2>
+        <p id="attenteTxt"></p>
+      </div></div>
+
+      <div class="card cache" id="succes"><div class="lis"></div><div class="pad succes">
+        <div class="coche">&#10003;</div>
+        <h2>Merci, c'est validé !</h2>
+        <p>Ton abonnement est prolongé.</p>
+        <span class="echeance-neuve" id="nouvelle"></span>
+      </div></div>
+
+      <div class="card cache" id="refus"><div class="lis"></div><div class="pad refus">
+        <h2>Paiement non trouvé</h2>
+        <p>Nous n'avons pas retrouvé ce paiement Wave. Vérifie le numéro avec lequel tu as payé, ou appelle-nous au <b>05 84 71 14 52</b>.</p>
+        <button class="btn vert" id="btnRefaire" type="button">Réessayer</button>
+      </div></div>
+    </div>
+
+    <!-- ===== Historique ===== -->
+    <div id="t-histo" class="cache">
+      <div class="card"><div class="lis"></div><div class="pad histo">
+        <h3>Derniers paiements</h3>
+        <div id="histoL"></div>
+        <p class="vide cache" id="histoVide">Aucun paiement enregistré pour l'instant.</p>
+      </div></div>
+      <div class="card"><div class="lis"></div><div class="pad">
+        <p class="petit-titre">Ton abonnement</p>
+        <p class="vide" id="histoEch"></p>
+      </div></div>
+    </div>
+
+    <!-- ===== Aide ===== -->
+    <div id="t-aide" class="cache">
+      <div class="card"><div class="lis"></div><div class="pad">
+        <p class="etape" style="margin-bottom:6px">Une question ?</p>
+        <p class="vide">On te répond au téléphone.</p>
+        <a class="btn vert" href="tel:0584711452">Appeler le 05 84 71 14 52</a>
+      </div></div>
+
+      <div class="card"><div class="lis"></div><div class="pad">
+        <div class="ligne">
+          <div class="pastille cloche" id="rapPastille"><svg width="18" height="18"><use href="#cloche"/></svg></div>
+          <div>
+            <h3 id="rapTitre">Rappels d'échéance</h3>
+            <p id="rapTxtAide"></p>
+            <button class="btn or petit cache" id="btnRapAide" type="button"></button>
+          </div>
+        </div>
+      </div></div>
+
+      <div class="card"><div class="lis"></div><div class="pad faq">
+        <h3>Comment renouveler ?</h3>
+        <p>Dans l'onglet Accueil, choisis la durée, touche « Payer avec Wave », puis reviens ici et touche « J'ai payé ».</p>
+        <h3>J'ai payé mais rien ne change</h3>
+        <p>Vérifie le numéro Wave saisi : c'est celui avec lequel tu as payé. Ton abonnement est prolongé dès que le paiement arrive. Sinon, appelle-nous.</p>
+        <h3>Je change de téléphone</h3>
+        <p>Depuis le nouveau téléphone, connecte-toi au Wi-Fi Saioua, ouvre « Abonné à domicile » puis « Installer l'application ».</p>
+      </div></div>
+
+      <div class="card"><div class="lis"></div><div class="pad">
+        <p class="petit-titre">Cet appareil</p>
+        <p class="vide" id="aideAppareil"></p>
+        <button class="btn clair petit" id="btnRetirer" type="button">Retirer cet appareil</button>
+      </div></div>
+    </div>
+
+    <p class="pied">Une question ? Appelle le <a href="tel:0584711452">05 84 71 14 52</a></p>
+  </section>
+</div>
+<div class="pagne"></div>
+
+<nav class="tabs cache" id="tabs" aria-label="Navigation">
+  <button class="tab on" type="button" data-t="accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" fill="currentColor"/></svg>Accueil</button>
+  <button class="tab" type="button" data-t="histo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 8 8h-2a6 6 0 1 1-1.8-4.2L14 10h6V4l-2.4 2.4A8 8 0 0 0 12 4zm-1 4v5l4 2 .8-1.6-3-1.4V8z" fill="currentColor"/></svg>Historique</button>
+  <button class="tab" type="button" data-t="aide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm-1 13v-2h2v2zm.2-4v-.6c0-1.4 2-1.6 2-3a2.2 2.2 0 0 0-4.4 0H7.8a4.2 4.2 0 0 1 8.4 0c0 2.4-3 2.6-3 3.6z" fill="currentColor"/></svg>Aide</button>
+</nav>
+
+<div class="toast cache" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+  var FN = "https://pqgfmtftxaetbqraycua.supabase.co/functions/v1/";
+  var WAVE = "https://pay.wave.com/m/M_OKYyaIarprZ1/c/ci/";
+  var UA = navigator.userAgent || "";
+  var isAndroid = /android/i.test(UA);
+  var isIOS = /iphone|ipad|ipod/i.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  var NB = " ";
+
+  /* ---------- petits outils ---------- */
+  function E(id) { return document.getElementById(id); }
+  function txt(id, t) { E(id).textContent = t; }
+  function montre(id, oui) { E(id).classList[oui ? "remove" : "add"]("cache"); }
+  var ls = {
+    get: function (k) { try { return localStorage.getItem("saioua." + k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem("saioua." + k, v); } catch (e) {} },
+    del: function (k) { try { localStorage.removeItem("saioua." + k); } catch (e) {} }
+  };
+  function f(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, NB) + NB + "F"; }
+  function d(iso) { return iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4); }
+  function telOk(s) {
+    var x = String(s || "").replace(/\D/g, "");
+    if (x.length === 13 && x.indexOf("225") === 0) { x = x.slice(3); }
+    return /^0\d{9}$/.test(x) ? x : null;
+  }
+  function fmtTel(x) { var o = []; for (var i = 0; i < x.length; i += 2) { o.push(x.slice(i, i + 2)); } return o.join(" "); }
+  var toastT = null;
+  function toast(t, err) {
+    var el = E("toast");
+    el.textContent = t;
+    el.className = "toast" + (err ? " err" : "");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { el.className = "toast cache"; }, 4200);
+  }
+  function api(fn, body) {
+    var opt = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+    if (window.AbortSignal && AbortSignal.timeout) { opt.signal = AbortSignal.timeout(25000); }
+    return fetch(FN + fn, opt).then(function (r) {
+      return r.json().then(function (j) { return { s: r.status, j: j }; }, function () { return { s: r.status, j: null }; });
+    }).catch(function () { return null; });
+  }
+  function lienWave(prix) {
+    var url = WAVE + "?amount=" + prix;
+    if (!isAndroid) { return url; }
+    return "intent://" + url.replace(/^https:\/\//, "") + "#Intent;scheme=https;package=com.wave.personal;S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
+  }
+
+  /* ---------- vues ---------- */
+  var VUES = ["charge", "reseau", "nonlie", "bienvenue", "app"];
+  function vue(n) {
+    VUES.forEach(function (v) { montre("v-" + v, v === n); });
+    montre("tabs", n === "app");
+    window.scrollTo(0, 0);
+  }
+  var ONGLETS = ["accueil", "histo", "aide"];
+  function onglet(t) {
+    ONGLETS.forEach(function (x) { montre("t-" + x, x === t); });
+    var bs = document.querySelectorAll(".tab");
+    for (var i = 0; i < bs.length; i++) { bs[i].classList[bs[i].getAttribute("data-t") === t ? "add" : "remove"]("on"); }
+    window.scrollTo(0, 0);
+  }
+  (function () {
+    var bs = document.querySelectorAll(".tab");
+    for (var i = 0; i < bs.length; i++) { bs[i].onclick = function () { onglet(this.getAttribute("data-t")); }; }
+  })();
+
+  /* ---------- état ---------- */
+  var tok = ls.get("tok");
+  var ab = null, mois = 1, timer = null, essais = 0, payeur = "", derniereMaj = 0;
+  var CHOIX = [[1, "1", "mois"], [2, "2", "mois"], [3, "3", "mois"], [6, "6", "mois"]];
+
+  function nomComplet() {
+    var civ = ab.civilite || "";
+    if (/^(M\.|Mme|Mlle)\s/.test(ab.nom || "")) { civ = ""; }
+    return (civ ? civ + " " : "") + ab.nom;
+  }
+  function etat() {
+    var p = E("pill"), j = ab.jours;
+    if (ab.suspendu) { p.className = "pill retard"; p.textContent = "Accès suspendu"; }
+    else if (j < 0) { p.className = "pill retard"; p.textContent = "En retard de " + (-j) + (j === -1 ? " jour" : " jours"); }
+    else if (j === 0) { p.className = "pill bientot"; p.textContent = "Échéance aujourd'hui"; }
+    else if (j <= 5) { p.className = "pill bientot"; p.textContent = "Échéance dans " + j + (j === 1 ? " jour" : " jours") + " (" + d(ab.echeance) + ")"; }
+    else { p.className = "pill ok"; p.textContent = "À jour jusqu'au " + d(ab.echeance); }
+    txt("histoEch", j < 0 ? "Échéance dépassée depuis le " + d(ab.echeance) + "." : "Prochaine échéance : " + d(ab.echeance) + ".");
+  }
+  function dessinerDurees() {
+    var h = "";
+    for (var i = 0; i < CHOIX.length; i++) {
+      h += '<button type="button" class="duree' + (CHOIX[i][0] === mois ? " on" : "") + '" data-m="' + CHOIX[i][0] + '"><b>' + CHOIX[i][1] + '</b><small>' + CHOIX[i][2] + '</small></button>';
+    }
+    E("durees").innerHTML = h;
+    var bs = E("durees").getElementsByTagName("button");
+    for (var k = 0; k < bs.length; k++) {
+      bs[k].onclick = function () { mois = Number(this.getAttribute("data-m")); dessinerDurees(); majMontant(); };
+    }
+  }
+  function majMontant() {
+    var t = ab.prix * mois;
+    txt("total", f(t));
+    txt("lienWave", "Payer " + f(t) + " avec Wave");
+    E("lienWave").href = lienWave(t);
+    E("lienWave2").href = WAVE + "?amount=" + t;
+    txt("btnPaye", "J'ai payé " + f(t));
+  }
+  function historique() {
+    var h = ab.historique || [], s = "";
+    for (var i = 0; i < h.length; i++) {
+      s += '<div class="l"><span class="m">' + f(h[i].montant) + '</span><span class="d">payé le ' + d(String(h[i].paye_le).slice(0, 10)) +
+        (h[i].periode_fin ? "<br>valable jusqu'au " + d(h[i].periode_fin) : "") + '</span></div>';
+    }
+    E("histoL").innerHTML = s;
+    montre("histoVide", !h.length);
+  }
+  function rendre() {
+    txt("nom", nomComplet());
+    txt("prixMois", f(ab.prix));
+    txt("bienvenueNom", nomComplet() + " : ce téléphone est lié à ton abonnement.");
+    txt("aideAppareil", "Lié à l'abonnement de " + nomComplet() + ".");
+    etat();
+    dessinerDurees();
+    majMontant();
+    historique();
+    if (!E("tel").value) {
+      var t = ab.tel || ls.get("tel");
+      if (t) { payeur = t; E("tel").value = fmtTel(t); }
+    }
+  }
+
+  /* ---------- paiement Wave ---------- */
+  function texteAttente(long) {
+    var t = ab.prix * mois, n = payeur ? " depuis le " + fmtTel(payeur) : "";
+    txt("attenteTxt", long
+      ? "Ton paiement de " + f(t) + n + " n'est pas encore arrivé. Vérifie qu'il est bien parti dans Wave avec ce numéro. Si c'est le cas, nous le validons à la main : tu peux fermer l'application."
+      : "Nous attendons ton paiement Wave de " + f(t) + n + ". Dès qu'il arrive, ton abonnement est prolongé automatiquement et tu reçois une notification. Tu peux aussi fermer l'application.");
+  }
+  function modeAttente(oui) {
+    montre("paiement", !oui);
+    montre("attente", oui);
+    if (oui) { montre("succes", false); montre("refus", false); }
+  }
+  function surveiller(vite) {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      api("abonne", { a: "statut", tok: tok }).then(function (r) {
+        essais++;
+        if (r && r.s === 401) { delier("Cet appareil n'est plus lié à un abonnement."); return; }
+        if (r && r.j && r.j.ok && r.j.demande) {
+          if (r.j.demande.status === "validated") { fini(r.j); return; }
+          if (r.j.demande.status === "rejected") { modeAttente(false); montre("paiement", false); montre("refus", true); return; }
+        }
+        if (essais > 25) { texteAttente(true); }
+        surveiller();
+      });
+    }, vite ? 300 : (essais < 5 ? 4000 : 9000));
+  }
+  function fini(r) {
+    clearTimeout(timer);
+    ab.echeance = r.echeance; ab.jours = r.jours; ab.suspendu = r.suspendu;
+    etat();
+    modeAttente(false);
+    montre("paiement", false);
+    txt("nouvelle", "Nouvelle échéance : " + d(r.echeance));
+    montre("succes", true);
+    rafraichir(true);
+  }
+  E("btnPaye").onclick = function () {
+    var b = this;
+    txt("erreur", "");
+    var t = telOk(E("tel").value);
+    if (!t) {
+      E("tel").className = "saisie err";
+      txt("erreur", "Indique ton numéro Wave : 10 chiffres, par exemple 07 00 00 00 00.");
+      return;
+    }
+    E("tel").className = "saisie";
+    payeur = t; ls.set("tel", t);
+    b.disabled = true;
+    api("abonne", { a: "demande", tok: tok, mois: mois, tel: t }).then(function (r) {
+      b.disabled = false;
+      if (r && r.s === 401) { delier("Cet appareil n'est plus lié à un abonnement."); return; }
+      var j = r && r.j;
+      if (j && j.ok) {
+        if (j.auto) { fini(j); return; }
+        essais = 0; texteAttente(false); modeAttente(true); surveiller(); return;
+      }
+      var e = j && j.error;
+      txt("erreur", e === "trop_de_demandes" ? "Trop de demandes aujourd'hui. Appelle-nous au 05 84 71 14 52."
+        : e === "tel" ? "Numéro Wave invalide. Indique 10 chiffres, par exemple 07 00 00 00 00."
+        : !r ? "Pas de connexion. Réessaie dans un instant."
+        : "Impossible d'envoyer la demande. Réessaie ou appelle-nous.");
+    });
+  };
+  E("btnRefaire").onclick = function () { montre("refus", false); montre("paiement", true); };
+
+  /* ---------- chargement des données ---------- */
+  function appliquerInfo(j) {
+    ab = j;
+    derniereMaj = Date.now();
+    rendre();
+  }
+  function rafraichir(force) {
+    if (!tok || !ab) { return Promise.resolve(false); }
+    if (!force && Date.now() - derniereMaj < 20000) { return Promise.resolve(false); }
+    return api("abonne", { a: "info", tok: tok }).then(function (r) {
+      if (!r) { return false; }
+      if (r.s === 401) { delier("Cet appareil n'est plus lié à un abonnement."); return false; }
+      if (r.j && r.j.ok) {
+        var enAttente = !E("attente").classList.contains("cache");
+        var enSucces = !E("succes").classList.contains("cache");
+        appliquerInfo(r.j);
+        if (!enAttente && !enSucces && r.j.demande && r.j.demande.status === "pending") {
+          mois = r.j.demande.mois; dessinerDurees(); majMontant();
+          texteAttente(false); modeAttente(true); essais = 0; surveiller();
+        }
+        return true;
+      }
+      return false;
+    });
+  }
+  function charger() {
+    vue("charge");
+    return api("abonne", { a: "info", tok: tok }).then(function (r) {
+      if (!r || !r.j) { vue("reseau"); return; }
+      if (r.s === 401) { delier("Cet appareil n'est plus lié à un abonnement. Relie-le de nouveau depuis le Wi-Fi Saioua."); return; }
+      if (!r.j.ok) { vue("reseau"); return; }
+      appliquerInfo(r.j);
+      if (ls.get("onb") === "1") { vue("bienvenue"); }
+      else { vue("app"); onglet("accueil"); }
+      majInstall();
+      majRappels();
+      if (r.j.demande && r.j.demande.status === "pending") {
+        mois = r.j.demande.mois; dessinerDurees(); majMontant();
+        texteAttente(false); modeAttente(true); essais = 0; surveiller();
+      }
+    });
+  }
+  function nonlie(msg) {
+    txt("nonlieMsg", msg || "Cette application se relie à ton abonnement une seule fois, depuis le Wi-Fi Saioua.");
+    vue("nonlie");
+  }
+  function delier(msg) {
+    tok = null; ab = null;
+    ls.del("tok"); ls.del("onb"); ls.del("rap");
+    nonlie(msg);
+  }
+
+  /* ---------- liaison par code ---------- */
+  function echanger(code) {
+    return api("appli", { a: "echange", code: code }).then(function (r) {
+      if (!r) { return "reseau"; }
+      if (r.j && r.j.ok && r.j.tok) {
+        tok = r.j.tok;
+        ls.set("tok", tok); ls.set("onb", "1");
+        return "ok";
+      }
+      return (r.j && r.j.error === "inconnu") ? "inconnu" : "code";
+    });
+  }
+  function apresEchange(res) {
+    if (res === "ok") { return charger(); }
+    if (res === "reseau") { vue("reseau"); return; }
+    nonlie(res === "inconnu"
+      ? "Ton abonnement n'est pas actif pour l'instant. Appelle-nous au 05 84 71 14 52."
+      : "Ce lien a expiré ou a déjà servi. Reviens sur la page « Abonné à domicile » du Wi-Fi Saioua et touche de nouveau « Installer l'application ».");
+  }
+  E("btnCode").onclick = function () {
+    var b = this;
+    var c = String(E("codeSaisie").value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    txt("codeErr", "");
+    if (c.length < 8 || c.length > 16) { txt("codeErr", "Le code a 10 caractères, lettres et chiffres."); return; }
+    b.disabled = true;
+    echanger(c).then(function (res) {
+      b.disabled = false;
+      if (res === "ok") { charger(); }
+      else { txt("codeErr", res === "reseau" ? "Pas de connexion. Réessaie dans un instant." : res === "inconnu" ? "Ton abonnement n'est pas actif. Appelle-nous." : "Code invalide ou expiré."); }
+    });
+  };
+  E("btnReessayer").onclick = function () { demarrer(); };
+
+  /* ---------- installation de l'application ---------- */
+  var evInstall = null;
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); evInstall = e; majInstall(); });
+  window.addEventListener("appinstalled", function () { evInstall = null; standalone = true; majInstall(); toast("Application installée."); });
+  function majInstall() {
+    if (standalone) { montre("carte-install", false); return; }
+    montre("carte-install", true);
+    if (evInstall) {
+      txt("installTxt", "Un seul geste pour ouvrir ton abonnement, et les rappels arrivent comme un SMS.");
+      montre("btnInstall", true);
+    } else {
+      montre("btnInstall", false);
+      txt("installTxt", isIOS
+        ? "Touche le bouton Partager du navigateur, puis « Sur l'écran d'accueil »."
+        : "Dans le menu du navigateur (les trois points en haut), choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».");
+    }
+  }
+  E("btnInstall").onclick = function () {
+    if (!evInstall) { return; }
+    var ev = evInstall;
+    ev.prompt();
+    ev.userChoice.then(function () { evInstall = null; majInstall(); }, function () {});
+  };
+
+  /* ---------- rappels (notifications push) ---------- */
+  var rap = "inconnu";
+  function pushDispo() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+  function swPret() {
+    return Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise(function (_, no) { setTimeout(function () { no(new Error("sw")); }, 5000); })
+    ]);
+  }
+  function u8(s) {
+    var t = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (t.length % 4) { t += "="; }
+    var b = atob(t), o = new Uint8Array(b.length);
+    for (var i = 0; i < b.length; i++) { o[i] = b.charCodeAt(i); }
+    return o;
+  }
+  function etatRappels() {
+    if (!pushDispo()) { return Promise.resolve("indispo"); }
+    if (isIOS && !standalone) { return Promise.resolve("ios"); }
+    if (Notification.permission === "denied") { return Promise.resolve("refuse"); }
+    if (Notification.permission !== "granted") { return Promise.resolve("inactif"); }
+    return swPret().then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (!sub) { return "inactif"; }
+        return api("appli", { a: "push_etat", tok: tok, endpoint: sub.endpoint }).then(function (r) {
+          if (r && r.j && r.j.ok) { return r.j.actif ? "actif" : "inactif"; }
+          return ls.get("rap") === "1" ? "actif" : "inactif";
+        });
+      });
+    }).catch(function () { return "inactif"; });
+  }
+  function majRappels() {
+    return etatRappels().then(function (e) {
+      rap = e;
+      ls.set("rap", e === "actif" ? "1" : "0");
+      var ba = E("btnRapAide"), bb = E("btnRapBienvenue");
+      var texteAide, btn = null, bien = null;
+      if (e === "actif") { texteAide = "Activés : tu es prévenu 3 jours avant ton échéance, et à chaque paiement reçu."; btn = "Désactiver les rappels"; bien = "Rappels activés"; }
+      else if (e === "inactif") { texteAide = "Désactivés. Active-les pour ne plus oublier ton échéance."; btn = "Activer les rappels"; bien = "Activer les rappels"; }
+      else if (e === "refuse") { texteAide = "Les notifications sont bloquées pour cette application. Autorise-les dans les réglages du téléphone (Applications, Saioua, Notifications)."; }
+      else if (e === "ios") { texteAide = "Sur iPhone, ajoute d'abord l'application à l'écran d'accueil (bouton Partager), puis ouvre-la depuis l'icône pour activer les rappels."; }
+      else { texteAide = "Ce navigateur ne permet pas les rappels. Tu peux utiliser Chrome sur Android."; }
+      txt("rapTxtAide", texteAide);
+      montre("btnRapAide", !!btn);
+      if (btn) { ba.textContent = btn; ba.className = "btn petit " + (e === "actif" ? "clair" : "or"); }
+      // écran d'accueil de l'app : seulement si on peut encore agir
+      montre("carte-rap", e === "inactif" || e === "refuse" || e === "ios");
+      txt("rapTxtAccueil", e === "inactif" ? "Active-les pour être prévenu 3 jours avant ton échéance, et à chaque paiement reçu."
+        : e === "refuse" ? "Les notifications sont bloquées. Autorise-les dans les réglages du téléphone pour recevoir les rappels."
+        : "Ajoute d'abord l'application à l'écran d'accueil pour recevoir les rappels sur iPhone.");
+      montre("btnRapAccueil", e === "inactif");
+      // écran de bienvenue
+      var ok = e === "actif";
+      bb.textContent = ok ? "Rappels activés ✓" : (bien || "Activer les rappels");
+      bb.disabled = ok;
+      bb.className = "btn petit " + (ok ? "fait" : "or");
+      montre("btnRapBienvenue", e === "inactif" || e === "actif");
+      txt("bienvenueRap", ok ? "C'est fait : tu seras prévenu 3 jours avant ton échéance, et à chaque paiement reçu."
+        : e === "refuse" ? "Les notifications sont bloquées. Tu pourras les autoriser dans les réglages du téléphone."
+        : e === "ios" ? "Sur iPhone, ajoute d'abord l'application à l'écran d'accueil pour recevoir les rappels."
+        : e === "indispo" ? "Ce navigateur ne permet pas les rappels."
+        : "3 jours avant ton échéance, et à chaque paiement reçu.");
+    });
+  }
+  var rapOccupe = false;
+  function activerRappels() {
+    if (rapOccupe) { return; }
+    rapOccupe = true;
+    var fin = function () { rapOccupe = false; return majRappels(); };
+    Notification.requestPermission().then(function (perm) {
+      if (perm !== "granted") { toast("Notifications non autorisées.", true); return; }
+      return swPret().then(function (reg) {
+        return reg.pushManager.getSubscription().then(function (sub) {
+          if (sub) { return sub; }
+          return api("appli", { a: "cle" }).then(function (r) {
+            if (!r || !r.j || !r.j.pub) { throw new Error("cle"); }
+            return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(r.j.pub) });
+          });
+        });
+      }).then(function (sub) {
+        var j = sub.toJSON();
+        return api("appli", { a: "push_sub", tok: tok, sub: { endpoint: j.endpoint, keys: j.keys } }).then(function (r) {
+          if (r && r.s === 401) { delier("Cet appareil n'est plus lié à un abonnement."); return; }
+          if (r && r.j && r.j.ok) { toast("Rappels activés. Une notification d'essai arrive."); }
+          else { toast("Les rappels n'ont pas pu être activés. Réessaie dans un instant.", true); }
+        });
+      });
+    }).catch(function () {
+      toast("Impossible d'activer les rappels sur ce navigateur.", true);
+    }).then(fin, fin);
+  }
+  function desactiverRappels() {
+    if (rapOccupe) { return; }
+    rapOccupe = true;
+    var fin = function () { rapOccupe = false; return majRappels(); };
+    swPret().then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (!sub) { return; }
+        var ep = sub.endpoint;
+        return api("appli", { a: "push_unsub", tok: tok, endpoint: ep }).then(function () { return sub.unsubscribe(); });
+      });
+    }).then(function () { toast("Rappels désactivés."); }, function () { toast("Impossible de désactiver pour l'instant.", true); }).then(fin, fin);
+  }
+  E("btnRapAccueil").onclick = activerRappels;
+  E("btnRapBienvenue").onclick = activerRappels;
+  E("btnRapAide").onclick = function () { if (rap === "actif") { desactiverRappels(); } else { activerRappels(); } };
+
+  E("btnContinuer").onclick = function () {
+    ls.del("onb");
+    vue("app"); onglet("accueil");
+    majRappels();
+  };
+
+  /* ---------- retirer cet appareil ---------- */
+  E("btnRetirer").onclick = function () {
+    if (!window.confirm("Retirer cet appareil ? Tu devras le relier de nouveau depuis le Wi-Fi Saioua.")) { return; }
+    var t = tok;
+    var fin = function () { api("appli", { a: "deconnexion", tok: t }).then(function () { delier("Cet appareil a été retiré."); }); };
+    if (pushDispo()) {
+      swPret().then(function (reg) { return reg.pushManager.getSubscription(); })
+        .then(function (sub) { return sub ? sub.unsubscribe() : null; })
+        .then(fin, fin);
+    } else { fin(); }
+  };
+
+  /* ---------- retour dans l'application ---------- */
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "visible" || !tok || !ab || E("v-app").classList.contains("cache")) { return; }
+    if (!E("attente").classList.contains("cache")) { surveiller(true); }
+    else { rafraichir(false); }
+  });
+
+  /* ---------- démarrage ---------- */
+  function demarrer() {
+    vue("charge");
+    var m = /[#&?]c=([A-Za-z0-9]{8,16})/.exec(location.hash || "");
+    if (m) {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+      return echanger(m[1].toUpperCase()).then(apresEchange);
+    }
+    tok = ls.get("tok");
+    if (!tok) { nonlie(); return; }
+    return charger();
+  }
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+  }
+  window.addEventListener("hashchange", function () { if (/[#&?]c=/.test(location.hash || "")) { demarrer(); } });
+  demarrer();
+})();
+</script>
+</body>
+</html>
